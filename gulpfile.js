@@ -6,7 +6,8 @@ var concat = require('gulp-concat'),
 	rename = require('gulp-rename'),
 	notify = require("gulp-notify"),
 	jshint = require('gulp-jshint'),
-	uglify = require('gulp-uglify');
+	uglify = require('gulp-uglify'),
+	sourcemaps = require('gulp-sourcemaps');
 
 
 gulp.task('styles', function () {
@@ -19,7 +20,7 @@ gulp.task('styles', function () {
 		.on('error', notify.onError(function (error) {
 			return error.message;
 		}))
-		.pipe(gulp.dest('./'))
+		.pipe(gulp.dest('css/'))
 		.pipe(notify({message: 'Styles task complete'}));
 });
 
@@ -28,12 +29,15 @@ gulp.task('scripts', function () {
 	return gulp.src(['js/jquery.crowdedmouse.js'])
 		//.pipe(jshint('.jshintrc'))
 		//.pipe(jshint.reporter('default'))
-
+		.pipe(sourcemaps.init())
 		.pipe(rename({suffix: '.min'}))
-		.pipe(uglify())
+		.pipe(uglify({
+			'preserveComments': 'some'
+		}))
 		.on('error', notify.onError(function (error) {
 			return error.message;
 		}))
+		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('js/'))
 		.on('error', function (err) {
 			console.log(err.message);
